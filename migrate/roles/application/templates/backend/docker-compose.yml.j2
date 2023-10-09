@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+  backend:
+    image: "{{ docker_repository }}/{{ application_backend_image }}"
+    container_name: application_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - common.env
+      - uwsgi.env
+    sysctls:
+      - net.core.somaxconn=1024
+
+  backend-redis:
+    image: "{{ docker_repository }}/redis:7.0.4-alpine"
+    container_name: application_redis
+    environment:
+      - REDIS_PASSWORD=password
+    command: sh -c "redis-server --appendonly yes --requirepass $$REDIS_PASSWORD"
+    ports:
+      - "6379:6379"

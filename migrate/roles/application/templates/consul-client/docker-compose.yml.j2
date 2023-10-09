@@ -1,0 +1,17 @@
+version: "3.3"
+
+volumes:
+  consul-client:
+    driver: local
+
+services:
+  consul-client:
+    image: {{ docker_repository }}/{{ application_consul_client_image }}
+    container_name: consul-client
+    restart: always
+    volumes:
+      - {{ application_consul_client_workdir }}/configs/client.json:/consul/config/client.json:ro
+      - consul-client:/consul/data
+    network_mode: host
+    command:
+      - "agent"

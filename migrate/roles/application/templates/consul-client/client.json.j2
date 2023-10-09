@@ -1,0 +1,38 @@
+{
+    "bind_addr": "{{ host_addresses.internal.address }}",
+    "client_addr": "{{ host_addresses.internal.address }}",
+    "datacenter": "{{ application_consul_client_datacenter }}",
+    "domain": "{{ application_consul_client_domain }}",
+    "data_dir": "/consul/data",
+    "ui_config": {
+        "enabled" : true
+    },
+    "log_level": "INFO",
+    "enable_debug": true,
+    "node_name": "{{ hostvars[inventory_hostname].hostname }}",
+    "server": false,
+    "recursors": ["8.8.8.8", "8.8.4.4"],
+    "services": [
+        {
+            "id": "pgdb_s2-postgres-master",
+            "name": "pgdb_s2-postgres",
+            "tags": ["master", "primary"],
+            "address": "{{ host_addresses.internal.address }}",
+            "port": 5433
+        },
+        {
+            "id": "pgdb_s2-postgres-replica",
+            "name": "pgdb_s2-postgres",
+            "tags": ["replica"],
+            "address": "{{ host_addresses.internal.address }}",
+            "port": 5433         
+        }
+    ],
+    "rejoin_after_leave": true,
+    "disable_update_check": true,
+    "retry_join": [
+{% for host in application_consul_client_region_nodes %}
+        "{{ hostvars[host].host_addresses.internal.address }}:8301"{{ "," if not loop.last else "" }}
+{% endfor %}
+    ]
+}
