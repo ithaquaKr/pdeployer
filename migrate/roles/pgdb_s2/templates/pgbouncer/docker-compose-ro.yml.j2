@@ -1,0 +1,21 @@
+version: "3.3"
+
+volumes:
+  app_config:
+    driver: local
+
+services:
+  pgbouncer-ro:
+    image: {{ docker_repository }}/{{ pgdb_s2_pgbouncer_image }}
+    container_name: pgbouncer-ro
+    restart: always
+    volumes:
+      - ./users.txt:{{ pgdb_s2_pgbouncer_auth_file }}
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - app_config:/etc/pgbouncer/
+# TODO: why use network bridge fail?
+#    ports:
+#      - {{ pgdb_s2_pgbouncer_ro_port }}:{{ pgdb_s2_pgbouncer_port }}
+    network_mode: host
+    environment:
+      - TZ=Asia/Ho_Chi_Minh

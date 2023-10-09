@@ -1,0 +1,56 @@
+---
+- name: Ensuring directory {{ pgdb_s2_postgres_workdir }} exists
+  file:
+    path: "{{ pgdb_s2_postgres_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring directory {{ pgdb_s2_postgres_datadir }} exists
+  file:
+    path: "{{ pgdb_s2_postgres_datadir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+    mode: 0775
+
+- name: Ensuring data directories in {{ pgdb_s2_postgres_datadir }} directory exists
+  file:
+    path: "{{ pgdb_s2_postgres_workdir }}/{{ item.path }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: 'postgres-data/logs', mode: "0775" }
+    - { path: 'postgres-data/data', mode: "0750" }
+
+- name: Copying config files to {{ pgdb_s2_postgres_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgdb_s2_postgres_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'postgres/patroni-config.yml.j2', dest: 'patroni-config.yml'}
+
+- name: Copying docker-compose file
+  template:
+    src: postgres/docker-compose.yml.j2  
+    dest: "{{ pgdb_s2_postgres_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running postgres, patroni services
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s2_postgres_workdir }}"
+    state: present
+    recreate: always
+
+- name: Ensuring postgreSQL is started and accepting connection
+  command: docker exec -it postgres pg_isready -h {{ host_addresses.internal.address }} -p {{ pgdb_s2_postgres_port }}
+  register: pg_isready_result
+  until: pg_isready_result.rc == 0
+  retries: 5
+  delay: 3
+  changed_when: false

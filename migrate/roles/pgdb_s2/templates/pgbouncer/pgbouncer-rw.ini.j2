@@ -1,0 +1,14 @@
+[databases]
+{% for pool in pgdb_s2_pgbouncer_pools %}
+{{ pool.name }}=host={{ pgdb_s2_master_domain }} port={{ pgdb_s2_postgres_port }} dbname={{ pool.dbname }}
+{% endfor %}
+
+[pgbouncer]
+pool_mode={{ pgdb_s2_pgbouncer_pool_mode | default('transaction') }}
+max_client_conn={{ pgdb_s2_pgbouncer_max_client_conn | default(1000) }}
+listen_port={{ pgdb_s2_pgbouncer_rw_port | default(6432) }}
+listen_addr={{ pgdb_s2_pgbouncer_listen_addr | default('0.0.0.0') }}
+auth_type={{ pgdb_s2_pgbouncer_auth_type | default('md5') }}
+auth_file={{ pgdb_s2_pgbouncer_auth_file | default('/pgbouncer/users.txt') }}
+admin_users={{ pgdb_s2_pgbouncer_admin_users | default('postgres') }}
+default_pool_size={{ pgdb_s2_pgbouncer_default_pool_size | default(30) }}

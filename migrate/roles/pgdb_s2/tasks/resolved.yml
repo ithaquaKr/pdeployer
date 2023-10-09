@@ -1,0 +1,22 @@
+---
+- name: Make sure /etc/resolv.conf exists
+  stat:
+    path: /etc/resolv.conf
+  register: resolv_conf  
+
+- name: Create /etc/resolv.conf
+  file:
+    path: /etc/resolv.conf
+    state: touch
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  when: not resolv_conf.stat.exists
+
+- name: Add DNS server(s) into  /etc/resolv.conf
+  lineinfile:
+    path: /etc/resolv.conf
+    regexp: "^nameserve {{ host_addresses.internal.address }}"
+    insertbefore: '^options'
+    line: "nameserver {{ host_addresses.internal.address }}"
+    unsafe_writes: true

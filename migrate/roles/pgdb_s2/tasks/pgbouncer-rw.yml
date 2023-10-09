@@ -1,0 +1,37 @@
+---
+- name: Ensuring directory {{ pgdb_s2_pgbouncer_rw_workdir }} exists
+  file:
+    path: "{{ pgdb_s2_pgbouncer_rw_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Copying pgbouncer config files to {{ pgdb_s2_pgbouncer_rw_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgdb_s2_pgbouncer_rw_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}" 
+    group: "{{ app_user }}" 
+  loop:
+    - { src: 'pgbouncer/users.txt.j2', dest: 'users.txt'}
+    - { src: 'pgbouncer/pgbouncer-rw.ini.j2', dest: 'pgbouncer.ini'}
+
+- name: Copying docker-compose file
+  template:
+    src: pgbouncer/docker-compose-rw.yml.j2
+    dest: "{{ pgdb_s2_pgbouncer_rw_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running pgbouncer, confd services
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s2_pgbouncer_rw_workdir }}"
+    state: present
+
+- name: Ensuring pgbouncer is started and accepting connections
+  wait_for:
+    host: "{{ host_addresses.internal.address }}"
+    port: "{{ pgdb_s2_pgbouncer_rw_port }}"
+    state: started
+    timeout: 60
+    delay: 5

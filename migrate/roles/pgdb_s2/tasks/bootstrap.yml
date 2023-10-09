@@ -1,0 +1,27 @@
+---
+- name: Install psycopg2
+  pip:
+    name: psycopg2
+
+- name: Make sure the PostgreSQL users are present
+  community.postgresql.postgresql_user:
+    db: "{{ pgdb_s2_postgres_dbname }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.flags }}"
+    login_host: "{{ pgdb_s2_keepalived_vip_address }}"
+    port: "{{ pgdb_s2_haproxy_listen_port.pgbouncer }}"
+    login_user: "{{ pgdb_s2_postgres_users.superuser.username }}"
+    login_password: "{{ pgdb_s2_postgres_users.superuser.password }}"
+  loop: "{{ pgdb_s2_bootstrap_users | flatten(1) }}"
+
+- name: Make sure the PostgreSQL databases are present and has their owner
+  community.postgresql.postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    # TODO: Fix hosts port,
+    login_host: "{{ pgdb_s2_keepalived_vip_address }}"
+    port: "{{ pgdb_s2_haproxy_listen_port.pgbouncer }}"
+    login_user: "{{ pgdb_s2_postgres_users.superuser.username }}"
+    login_password: "{{ pgdb_s2_postgres_users.superuser.password }}"
+  loop: "{{ pgdb_s2_bootstrap_databases | flatten(1) }}"

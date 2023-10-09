@@ -1,0 +1,36 @@
+{
+    "bind_addr": "{{ host_addresses.internal.address }}",
+    "client_addr": "{{ host_addresses.internal.address }}",
+    "datacenter": "{{ pgdb_s2_consul_datacenter }}",
+    "domain": "{{ pgdb_s2_consul_domain }}",
+    "data_dir": "/consul/data",
+    "ui_config": {
+        "enabled" : true
+    },
+    "log_level": "INFO",
+    "enable_debug": true,
+    "node_name": "{{ hostvars[inventory_hostname].hostname }}",
+    "server": true,
+    "bootstrap_expect": 3,
+    "leave_on_terminate": false,
+    "skip_leave_on_interrupt": true,
+    "rejoin_after_leave": true,
+    "disable_update_check": true,
+    "performance": {
+        "raft_multiplier": 1
+    },
+    "recursors": [],
+    "ports": {
+        "dns": 53
+    },
+    "retry_join": [
+{% for host in pgdb_s2_region_nodes %}
+        "{{ hostvars[host].host_addresses.internal.address }}:8301"{{ "," if not loop.last else "" }}
+{% endfor %}
+    ],
+    "retry_join_wan": [
+{% for host in groups['pgdb_s2'] | difference(pgdb_s2_region_nodes) %}
+        "{{ hostvars[host].host_addresses.internal.address }}:8302"{{ "," if not loop.last else "" }}
+{% endfor %}
+    ]
+}
