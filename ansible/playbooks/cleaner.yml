@@ -1,0 +1,6 @@
+---
+- name: Clean environments
+  hosts: all
+  become: true
+  roles:
+    - cleaner

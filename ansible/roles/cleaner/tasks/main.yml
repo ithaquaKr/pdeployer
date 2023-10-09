@@ -1,0 +1,5 @@
+---
+- name: Clean environment
+  import_tasks: clean.yml
+  tags:
+    - cleaner

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+compose_files=$(find /home/vt_app/ -type f -name "docker-compose.yml" -exec dirname {} \;)
+
+for dir in $compose_files; do
+    echo "Stopping service in $dir"
+    (cd "$dir" && docker-compose down -v)
+done
+
+echo "All docker-compose down -v operations completed."
