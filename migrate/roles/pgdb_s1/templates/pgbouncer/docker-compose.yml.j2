@@ -1,0 +1,31 @@
+version: "3.3"
+
+volumes:
+  app_config:
+    driver: local
+
+services:
+  confd_pgbouncer:
+    image: {{ docker_repository }}/{{ pgdb_s1_confd_image }}
+    container_name: confd_pgbouncer
+    restart: always
+    volumes:
+      - ./confd/:/etc/confd/
+      - /var/run/docker.sock:/var/run/docker.sock
+      - app_config:/confd/app_config/
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    depends_on:
+      - pgbouncer
+
+  pgbouncer:
+    image: {{ docker_repository }}/{{ pgdb_s1_pgbouncer_image }}
+    container_name: pgbouncer
+    restart: always
+    volumes:
+      - ./users.txt:{{ pgdb_s1_pgbouncer_auth_file }}
+      - app_config:/etc/pgbouncer/
+    ports:
+      - {{ pgdb_s1_pgbouncer_port }}:{{ pgdb_s1_pgbouncer_port }}
+    environment:
+      - TZ=Asia/Ho_Chi_Minh

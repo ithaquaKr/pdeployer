@@ -1,0 +1,15 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: "{{ docker_repository }}/{{ pgdb_s1_postgres_image }}"
+    container_name: postgres
+    shm_size: '2gb'
+    restart: always
+    volumes:
+      - {{ pgdb_s1_postgres_datadir }}:{{ pgdb_s1_postgres_datadir_container }}
+      - ./patroni-config.yml:/var/lib/postgresql/patroni-config.yml
+    network_mode: host
+    environment: 
+      - TZ=Asia/Ho_Chi_Minh
+      - PG_UNIX_DIR={{ pgdb_s1_postgres_datadir }}

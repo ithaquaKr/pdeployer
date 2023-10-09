@@ -1,0 +1,8 @@
+backend="etcd"
+log-level="info"
+nodes=[
+{% for host in pgdb_s1_region_nodes %}
+    "http://{{ hostvars[host].host_addresses.internal.address }}:{{ pgdb_s1_etcd_listen_client_port }}"{{ "," if not loop.last else "" }}
+{% endfor %}
+]
+watch=true

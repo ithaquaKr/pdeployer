@@ -1,0 +1,48 @@
+---
+- name: Ensuring directory {{ pgdb_s1_haproxy_workdir }} exists
+  file:
+    path: "{{ pgdb_s1_haproxy_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring config directories exists
+  file:
+    path: "{{ pgdb_s1_haproxy_workdir }}/{{ item }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+  loop:
+    - confd/conf.d
+    - confd/templates
+
+- name: Copying config files to {{ pgdb_s1_haproxy_workdir }} directory
+  template:
+    src: "{{ item.src }}" 
+    dest: "{{ pgdb_s1_haproxy_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'haproxy/haproxy_confd_template.toml.j2', dest: 'confd/conf.d/confd_template.toml' }
+    - { src: 'confd/confd.toml.j2', dest: 'confd/confd.toml' }
+    - { src: 'haproxy/haproxy.cfg.tmpl.j2', dest: 'confd/templates/haproxy.cfg.tmpl' }
+
+- name: Copying docker-compose file
+  template:
+    src: haproxy/docker-compose.yml.j2
+    dest: "{{ pgdb_s1_haproxy_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running haproxy, confd services
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s1_haproxy_workdir }}"
+    state: present
+
+- name: Ensuring haproxy is started and accepting connections
+  wait_for: 
+    host: "{{ host_addresses.internal.address }}"
+    port: 9000
+    state: started
+    timeout: 60
+    delay: 5

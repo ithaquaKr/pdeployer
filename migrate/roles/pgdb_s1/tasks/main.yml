@@ -1,0 +1,31 @@
+---
+- name: Setup etcd
+  import_tasks: etcd.yml
+  any_errors_fatal: True
+  tags:
+    - pgdb_s1
+    - pgdb_s1_etcd
+
+- name: Setup postgres-patroni
+  import_tasks: postgres.yml
+  tags:
+    - pgdb_s1
+    - pgdb_s1_postgres
+
+- name: Setup pgbouncer
+  import_tasks: pgbouncer.yml
+  tags:
+    - pgdb_s1
+    - pgdb_s1_pgbouncer
+
+- name: Setup haproxy, confd
+  import_tasks: haproxy.yml
+  tags:
+    - pgdb_s1
+    - pgdb_s1_haproxy
+
+- name: Setup keepalived
+  import_tasks: keepalived.yml
+  tags:
+    - pgdb_s1
+    - pgdb_s1_keepalived

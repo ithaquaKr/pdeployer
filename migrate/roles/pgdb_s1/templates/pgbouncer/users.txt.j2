@@ -1,0 +1,3 @@
+{% for pool in pgdb_s1_pgbouncer_pools %}
+"{{ pool.name }}" "{{ pool.password_md5 }}"
+{% endfor %}

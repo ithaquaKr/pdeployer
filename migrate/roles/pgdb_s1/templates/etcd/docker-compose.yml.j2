@@ -1,0 +1,28 @@
+version: "3.3"
+
+volumes:
+  etcd_db:
+    driver: local
+
+services:
+  etcd:
+    image: "{{ docker_repository }}/{{ pgdb_s1_etcd_image }}"
+    container_name: etcd
+    restart: always
+    environment:
+      - ALLOW_NONE_AUTHENTICATION={{ pgdb_s1_etcd_allow_none_authentication }}
+      - ETCD_NAME={{ hostname }}
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS={{ pgdb_s1_etcd_initial_advertise_peer_urls }}
+      - ETCD_LISTEN_PEER_URLS={{ pgdb_s1_etcd_listen_peer_urls }}
+      - ETCD_LISTEN_CLIENT_URLS={{ pgdb_s1_etcd_listen_client_urls }}
+      - ETCD_ADVERTISE_CLIENT_URLS={{ pgdb_s1_etcd_advertise_client_urls }}
+      - ETCD_INITIAL_CLUSTER_TOKEN={{ pgdb_s1_etcd_initial_cluster_token }}
+      - ETCD_INITIAL_CLUSTER={% for host in pgdb_s1_region_nodes %}{{ hostvars[host].hostname }}=http://{{ hostvars[host].host_addresses.internal.address }}:{{ pgdb_s1_etcd_listen_peer_port }}{{ "," if not loop.last else "\n" }}{% endfor %}
+      - ETCD_INITIAL_CLUSTER_STATE={{ pgdb_s1_etcd_initial_cluster_state }}
+      - ETCD_ENABLE_V2={{ pgdb_s1_etcd_enable_v2 }}
+      - ETCD_DATA_DIR={{ pgdb_s1_etcd_data_dir }}
+    ports:
+      - {{ pgdb_s1_etcd_listen_peer_port }}:{{ pgdb_s1_etcd_listen_peer_port }}
+      - {{ pgdb_s1_etcd_listen_client_port }}:{{ pgdb_s1_etcd_listen_client_port }} 
+    volumes:
+    - etcd_db:/etcd-data:rw

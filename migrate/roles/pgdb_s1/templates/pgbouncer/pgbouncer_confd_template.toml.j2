@@ -1,0 +1,7 @@
+[template]
+src="pgbouncer.conf.tmpl"
+dest="/confd/app_config/pgbouncer.ini"
+keys=[
+    "/service/pgdb_s1-postgres/leader",
+]
+reload_cmd="docker restart pgbouncer"
