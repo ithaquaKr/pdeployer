@@ -1,0 +1,8 @@
+# Pgdb configs
+pgdb_s1_region_nodes:
+  - rg1node1
+  - rg1node2
+  - rg1node3
+
+# Keepalived configs
+pgdb_s1_keepalived_vip_address: 10.60.31.205
