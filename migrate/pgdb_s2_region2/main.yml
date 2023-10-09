@@ -1,0 +1,13 @@
+# Pgdb_s2 configs
+pgdb_s2_region_nodes:
+  - rg2node1
+  - rg2node2
+  - rg2node3
+
+# Consul configs
+pgdb_s2_consul_datacenter: "dc2"
+
+# Standby cluster configs
+pgdb_s2_standby_cluster:
+  primary_host_address: master.pgdb-s2-postgres.service.dc1.consul
+  primary_port: 8432

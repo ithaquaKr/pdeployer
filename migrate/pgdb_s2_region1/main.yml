@@ -1,0 +1,8 @@
+# Pgdb_s2 configs
+pgdb_s2_region_nodes:
+  - rg1node1
+  - rg1node2
+  - rg1node3
+
+# Consul configs
+pgdb_s2_consul_datacenter: "dc1"
