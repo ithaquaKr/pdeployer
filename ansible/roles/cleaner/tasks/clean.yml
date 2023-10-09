@@ -1,3 +1,4 @@
+---
 - name: Ensure directory exists
   file:
     name: "{{ app_base_dir }}/scripts"

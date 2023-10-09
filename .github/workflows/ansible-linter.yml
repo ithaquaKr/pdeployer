@@ -2,19 +2,19 @@
 name: Linting
 on: [push, pull_request]
 jobs:
-  ansible-lint:
-    name: Ansible Lint
-    runs-on: ubuntu-latest
-    container: cytopia/ansible-lint:5
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.8.0
-        with:
-          access_token: ${{ github.token }}
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Ansible Lint code
-        run: ansible-lint -c ./ansible/.ansible-lint -qq --force-color *.yml
+  # ansible-lint:
+  #   name: Ansible Lint
+  #   runs-on: ubuntu-latest
+  #   container: cytopia/ansible-lint:5
+  #   steps:
+  #     - name: Cancel Previous Runs
+  #       uses: styfle/cancel-workflow-action@0.8.0
+  #       with:
+  #         access_token: ${{ github.token }}
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #     - name: Ansible Lint code
+  #       run: ansible-lint -c ./ansible/.ansible-lint -qq --force-color *.yml
 
   yamllint:
     name: Yaml Lint

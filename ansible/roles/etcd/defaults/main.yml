@@ -1,3 +1,4 @@
+---
 # Etcd config
 
 ### Etcd images
@@ -7,7 +8,7 @@ etcd_image: etcd:v3.5.2
 etcd_workdir: "{{ pgdb_s1_workdir }}/etcd"
 
 ### Etcd enable authetication
-etcd_allow_none_authentication: yes
+etcd_allow_none_authentication: true
 
 ### Etcd port listen for peer
 etcd_listen_peer_port: 2380

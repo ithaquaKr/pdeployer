@@ -1,6 +1,5 @@
 ---
-exclude_paths:
-  - hosts_example.yml
+# exclude_paths:
 skip_list:
   - risky-shell-pipe
   - command-instead-of-shell
