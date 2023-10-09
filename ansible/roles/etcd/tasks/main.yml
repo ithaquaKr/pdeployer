@@ -1,0 +1,5 @@
+---
+- name: Setup etcd
+  import_tasks: etcd.yml
+  tags:
+    - etcd

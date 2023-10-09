@@ -1,0 +1,18 @@
+version: "3.3"
+
+volumes:
+  etcd_db:
+    driver: local
+
+services:
+  etcd:
+    image: "{{ etcd_image }}"
+    container_name: etcd
+    restart: always
+    env_file:
+      - etcd.env
+    ports:
+      - {{ etcd_listen_peer_port }}:{{ etcd_listen_peer_port }}
+      - {{ etcd_listen_client_port }}:{{ etcd_listen_client_port }}
+    volumes:
+    - etcd_db:/etcd-data:rw
