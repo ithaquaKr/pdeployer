@@ -1,0 +1,29 @@
+---
+- name: Ensuring directory {{ pgdb_s1_keepalived_workdir }} exists
+  file:
+    name: "{{ pgdb_s1_keepalived_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Copying config files to {{ pgdb_s1_keepalived_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgdb_s1_keepalived_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    backup: "{{ backup_env_files|default('false') }}"
+  loop:
+    - { src: 'keepalived/keepalived.conf.j2', dest: 'keepalived.conf'}
+
+- name: Copying docker-compose file
+  template:
+    src: keepalived/docker-compose.yml.j2
+    dest: "{{ pgdb_s1_keepalived_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running keepalived services
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s1_keepalived_workdir }}"
+    state: present
