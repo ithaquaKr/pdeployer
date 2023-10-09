@@ -11,6 +11,6 @@
     shell: /bin/bash
     groups:
       - docker
-    append: yes
+    append: true
     update_password: always
     password: "{{ app_user_password }}"

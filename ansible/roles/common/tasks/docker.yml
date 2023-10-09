@@ -3,7 +3,7 @@
   apt:
     name: "{{ item }}"
     state: present
-    update_cache: no
+    update_cache: false
   loop:
     - apt-transport-https
     - ca-certificates
@@ -34,7 +34,7 @@
   apt:
     name: docker.io
     state: present
-    update_cache: no
+    update_cache: false
 
 - name: Install docker-compose
   get_url:
