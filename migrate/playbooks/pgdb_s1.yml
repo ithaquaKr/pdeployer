@@ -1,0 +1,18 @@
+---
+- name: Deploy PostgreSQL cluster type-1 on region 1
+  hosts: pgdb_s1_region1
+  become: true
+  roles:
+    - pgdb_s1
+
+- name: Deploy PostgreSQL cluster type-1 on region 2
+  hosts: pgdb_s1_region2
+  become: true
+  roles:
+    - pgdb_s1
+
+- name: Deploy PostgreSQL cluster type-1 on region 3
+  hosts: pgdb_s1_region3
+  become: true
+  roles:
+    - pgdb_s1

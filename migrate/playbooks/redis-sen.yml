@@ -1,0 +1,18 @@
+---
+- name: Deploy Redis sentinel region 1
+  hosts: redis_sen_region1
+  become: true
+  roles:
+    - redis_sen
+
+- name: Deploy Redis sentinel region 2
+  hosts: redis_sen_region2
+  become: true
+  roles:
+    - redis_sen
+
+- name: Deploy Redis sentinel region 3
+  hosts: redis_sen_region3
+  become: true
+  roles:
+    - redis_sen

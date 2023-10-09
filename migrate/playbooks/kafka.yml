@@ -1,0 +1,18 @@
+---
+- name: Deploy Kafka region 1
+  hosts: kafka_region1
+  become: true
+  roles:
+    - kafka
+
+- name: Deploy Kafka region 2
+  hosts: kafka_region2
+  become: true
+  roles:
+    - kafka
+
+- name: Deploy Kafka region 3
+  hosts: kafka_region3
+  become: true
+  roles:
+    - kafka

@@ -1,0 +1,21 @@
+---
+- name: Clean environments
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy clean script to remote host
+      copy:
+        src: ./scripts/clean-env.sh
+        dest: /home/vt_app/clean-env.sh
+        mode: '0755'  
+
+    - name: Execute Bash Script
+      command: sh /home/vt_app/clean-env.sh
+      register: script_output
+
+    - name: Display Script Output
+      debug:
+        var: script_output.stdout_lines
+
+    - name: Clean dir
+      command: rm -rf /home/vt_app/{{ workdir }}
