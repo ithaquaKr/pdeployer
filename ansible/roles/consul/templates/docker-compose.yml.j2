@@ -1,0 +1,19 @@
+version: "3.3"
+
+volumes:
+  consul-server:
+    driver: local
+
+services:
+  consul-server:
+    image: {{ docker_repository }}/{{ consul_image }}
+    container_name: consul-server
+    restart: always
+    volumes:
+      - {{ consul_workdir }}/configs/server.json:/consul/config/server.json:ro
+      - consul-server:/consul/data
+    network_mode: host
+    environment:
+      - CONSUL_ALLOW_PRIVILEGED_PORTS=yes
+    command:
+      - "agent"

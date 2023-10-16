@@ -1,0 +1,5 @@
+---
+- name: Setup Consul
+  import_tasks: consul.yml
+  tags:
+    consul
