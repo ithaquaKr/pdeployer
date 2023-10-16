@@ -1,0 +1,36 @@
+{
+    "bind_addr": "{{ host_addresses.internal.address }}",
+    "client_addr": "{{ host_addresses.internal.address }}",
+    "datacenter": "{{ consul_datacenter }}",
+    "domain": "{{ consul_domain }}",
+    "data_dir": "{{ consul_data_dir }}",
+    "ui_config": {
+        "enabled" : {{ consul_ui_config }}
+    },
+    "log_level": {{ consul_log_level }},
+    "enable_debug": {{ consul_enable_debug }},
+    "node_name": "{{ hostvars[inventory_hostname].hostname }}",
+    "server": {{ consul_server }},
+    "bootstrap_expect": {{ consul_bootstrap_expect }},
+    "leave_on_terminate": {{ consul_leave_on_terminate }},
+    "skip_leave_on_interrupt": {{ consul_skip_leave_on_interrupt }},
+    "rejoin_after_leave": {{ consul_rejoin_after_leave }},
+    "disable_update_check": {{ consul_disable_update_check }},
+    "performance": {
+        "raft_multiplier": {{ consul_performance.raft_multiplier }}
+    },
+    "recursors": {{ consul_recursors}},
+    "ports": {
+        "dns": {{ consul_ports.dns }}
+    },
+    "retry_join": [
+{% for host in region_nodes %}
+        "{{ hostvars[host].host_addresses.internal.address }}:8301"{{ "," if not loop.last else "" }}
+{% endfor %}
+    ],
+    "retry_join_wan": [
+{% for host in groups['pgdb_s2'] | difference(region_nodes) %}
+        "{{ hostvars[host].host_addresses.internal.address }}:8302"{{ "," if not loop.last else "" }}
+{% endfor %}
+    ]
+}
