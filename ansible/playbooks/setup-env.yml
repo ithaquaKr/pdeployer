@@ -1,0 +1,6 @@
+---
+- name: Setup environments for node
+  host: all
+  become: true
+  roles:
+    - common
