@@ -13,3 +13,4 @@ troubleshooting/
 *base-config.yml
 molecule/*/*.tar.gz
 discovery/*.yml
+*.env
