@@ -11,12 +11,6 @@
     - common
     - user
 
-- name: Ensuring Docker has installed on host
-  import_tasks: docker.yml
-  tags:
-    - common
-    - docker
-
 # TODO: maybe install some useful package
 # - name: Ensuring pip and python packages has installed on host
 #   tags:
