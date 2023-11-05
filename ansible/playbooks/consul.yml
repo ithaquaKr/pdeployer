@@ -1,0 +1,6 @@
+---
+- name: Deploy Consul on region 1
+  hosts: consul
+  become: true
+  roles:
+    - consul
