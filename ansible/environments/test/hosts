@@ -1,8 +1,14 @@
 # Test Environment
 [all:children]
 common
+consul
 
 [common]
+region1node1    ansible_host=10.0.0.40
+region1node2    ansible_host=10.0.0.7
+region1node3    ansible_host=10.0.0.38
+
+[consul]
 region1node1    ansible_host=10.0.0.40
 region1node2    ansible_host=10.0.0.7
 region1node3    ansible_host=10.0.0.38
