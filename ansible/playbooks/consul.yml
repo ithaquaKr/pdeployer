@@ -3,4 +3,4 @@
   hosts: consul
   become: true
   roles:
-    - consul
+    - roles/consul
