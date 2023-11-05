@@ -16,9 +16,3 @@
   tags:
     - common
     - docker
-
-# TODO: maybe install some useful package
-# - name: Ensuring pip and python packages has installed on host
-#   tags:
-#     - common
-#     - pip

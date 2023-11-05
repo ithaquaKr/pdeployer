@@ -1,58 +1,9 @@
 ---
-- name: Ensure old versions of Docker are not installed
-  package:
-    name:
-      - docker
-      - docker-engine
-    state: absent
+- include_tasks: setup-redhat.yml
+  when: ansible_os_family == 'RedHat'
 
-- name: Ensure dependencies are installed
-  apt:
-    name:
-      - apt-transport-https
-      - ca-certificates
-    state: present
-  when: docker_add_repo | bool
-
-- name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems).
-  apt:
-    name: gnupg2
-    state: present
-  when: ansible_distribution != 'Ubuntu' or ansible_distribution_version is version('20.04', '<')
-
-- name: Ensure additional dependencies are installed (on Ubuntu >= 20.04).
-  apt:
-    name: gnupg
-    state: present
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
-
-- name: Add Docker apt key.
-  ansible.builtin.get_url:
-    url: "{{ docker_apt_gpg_key }}"
-    dest: /etc/apt/trusted.gpg.d/docker.asc
-    mode: '0644'
-    force: false
-    checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
-  register: add_repository_key
-  ignore_errors: "{{ docker_apt_ignore_key_error }}"
-  when: docker_add_repo | bool
-
-- name: Ensure curl is present (on older systems without SNI).
-  package: name=curl state=present
-  when: add_repository_key is failed and docker_add_repo | bool
-
-- name: Add Docker apt key (alternative for older systems without SNI).
-  shell: >
-    curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
-  when: add_repository_key is failed and docker_add_repo | bool
-
-- name: Add Docker repository.
-  apt_repository:
-    repo: "{{ docker_apt_repository }}"
-    state: present
-    filename: "{{ docker_apt_filename }}"
-    update_cache: true
-  when: docker_add_repo | bool
+- include_tasks: setup-debian.yml
+  when: ansible_os_family == 'Debian'
 
 - name: Install Docker packages.
   package:
@@ -111,12 +62,29 @@
   ignore_errors: "{{ ansible_check_mode }}"
   when: docker_service_manage | bool
 
-# >>???
-# - name: Ensure handlers are notified now to avoid firewall conflicts.
-#   meta: flush_handlers
+- name: Ensure handlers are notified now to avoid firewall conflicts.
+  meta: flush_handlers
 
-# - include_tasks: docker-compose.yml
-#   when: docker_install_compose | bool
+- include_tasks: docker-compose.yml
+  when: docker_install_compose | bool
+
+# - name: Get docker group info using getent.
+#   getent:
+#     database: group
+#     key: docker
+#     split: ':'
+#   when: docker_users | length > 0
+
+# - name: Check if there are any users to add to the docker group.
+#   set_fact:
+#     at_least_one_user_to_modify: true
+#   when:
+#     - docker_users | length > 0
+#     - item not in ansible_facts.getent_group["docker"][2]
+#   with_items: "{{ docker_users }}"
+
+# - include_tasks: docker-users.yml
+#   when: at_least_one_user_to_modify is defined
 
 - name: Check current docker-compose version.
   command: "{{ docker_compose_path }} --version"
@@ -148,21 +116,3 @@
     (docker_compose_current_version is not defined)
     or (docker_compose_current_version | length == 0)
     or (docker_compose_current_version is version((docker_compose_version | regex_replace('v', '')), '<'))
-
-- name: Get docker group info using getent.
-  getent:
-    database: group
-    key: docker
-    split: ':'
-  when: docker_users | length > 0
-
-# - name: Check if there are any users to add to the docker group.
-#   set_fact:
-#     at_least_one_user_to_modify: true
-#   when:
-#     - docker_users | length > 0
-#     - item not in ansible_facts.getent_group["docker"][2]
-#   with_items: "{{ docker_users }}"
-
-# - include_tasks: docker-users.yml
-#   when: at_least_one_user_to_modify is defined
