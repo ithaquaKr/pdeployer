@@ -1,5 +1,0 @@
----
-- name: Setup keepalived
-  import_tasks: keepalived.yml
-  tags:
-    - keepalived
