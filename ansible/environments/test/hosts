@@ -1,14 +1,16 @@
 # Test Environment
 [all:children]
-common
-consul
+region1
 
-[common]
+# Region Groups
+[region1]
 region1node1    ansible_host=10.0.0.40
 region1node2    ansible_host=10.0.0.7
 region1node3    ansible_host=10.0.0.38
 
-[consul]
-region1node1    ansible_host=10.0.0.40
-region1node2    ansible_host=10.0.0.7
-region1node3    ansible_host=10.0.0.38
+# Role Groups
+[common:children]
+region1
+
+[consul:children]
+region1
