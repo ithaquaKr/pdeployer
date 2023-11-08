@@ -5,7 +5,7 @@
 consul_image: consul:1.14.4
 
 ### Consul working directory
-consul_workdir: "{{ workdir }}/consul"
+consul_workdir: "{{ app_base_dir }}/consul"
 
 ### Consul domain name config
 consul_domain: "consul"
