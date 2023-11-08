@@ -22,7 +22,7 @@
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
   loop:
-    - { src: 'consul/server.json.j2', dest: 'configs/server.json'}
+    - { src: 'server.json.j2', dest: 'configs/server.json'}
 
 - name: Copying docker-compose file
   template:
