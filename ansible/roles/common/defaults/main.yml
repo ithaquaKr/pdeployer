@@ -55,3 +55,8 @@ docker_users: []
 
 # Docker daemon options as a dict
 docker_daemon_options: {}
+
+# Common package
+common_packages:
+  - pip
+common_packages_state: present
