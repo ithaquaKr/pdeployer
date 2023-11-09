@@ -16,3 +16,9 @@
   tags:
     - common
     - docker
+
+- name: Install pip and some useful package
+  import_tasks: package.yml
+  tags:
+    - common
+    - package
