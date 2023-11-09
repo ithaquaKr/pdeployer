@@ -2,7 +2,7 @@
 # Consul configs
 
 ### Consul container image
-consul_image: consul:1.14.4
+consul_image: consul:1.15
 
 ### Consul working directory
 consul_workdir: "{{ app_base_dir }}/consul"
