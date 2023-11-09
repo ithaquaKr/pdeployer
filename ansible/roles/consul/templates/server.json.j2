@@ -5,17 +5,17 @@
     "domain": "{{ consul_domain }}",
     "data_dir": "{{ consul_data_dir }}",
     "ui_config": {
-        "enabled" : {{ consul_ui_config }}
+        "enabled" : "{{ consul_ui_config.enabled }}"
     },
-    "log_level": {{ consul_log_level }},
-    "enable_debug": {{ consul_enable_debug }},
+    "log_level": "{{ consul_log_level }}",
+    "enable_debug": "{{ consul_enable_debug }}",
     "node_name": "{{ hostvars[inventory_hostname].hostname }}",
-    "server": {{ consul_server }},
+    "server": "{{ consul_server }}",
     "bootstrap_expect": {{ consul_bootstrap_expect }},
-    "leave_on_terminate": {{ consul_leave_on_terminate }},
-    "skip_leave_on_interrupt": {{ consul_skip_leave_on_interrupt }},
-    "rejoin_after_leave": {{ consul_rejoin_after_leave }},
-    "disable_update_check": {{ consul_disable_update_check }},
+    "leave_on_terminate": "{{ consul_leave_on_terminate }}",
+    "skip_leave_on_interrupt": "{{ consul_skip_leave_on_interrupt }}",
+    "rejoin_after_leave": "{{ consul_rejoin_after_leave }}",
+    "disable_update_check": "{{ consul_disable_update_check }}",
     "performance": {
         "raft_multiplier": {{ consul_performance.raft_multiplier }}
     },

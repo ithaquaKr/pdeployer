@@ -15,7 +15,7 @@ consul_data_dir: "/consul/data"
 
 ###
 consul_ui_config:
-  enable: true
+  enabled: true
 
 ###
 consul_log_level: "INFO"
