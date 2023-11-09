@@ -1,6 +1,6 @@
 {
-    "bind_addr": "{{ host_addresses.internal.address }}",
-    "client_addr": "{{ host_addresses.internal.address }}",
+    "bind_addr": "{{ ansible_host }}",
+    "client_addr": "{{ ansible_host }}",
     "datacenter": "{{ consul_datacenter }}",
     "domain": "{{ consul_domain }}",
     "data_dir": "{{ consul_data_dir }}",
@@ -25,12 +25,12 @@
     },
     "retry_join": [
 {% for host in region_nodes %}
-        "{{ hostvars[host].host_addresses.internal.address }}:8301"{{ "," if not loop.last else "" }}
+        "{{ hostvars[host].ansible_host }}:8301"{{ "," if not loop.last else "" }}
 {% endfor %}
     ],
     "retry_join_wan": [
-{% for host in groups['pgdb_s2'] | difference(region_nodes) %}
-        "{{ hostvars[host].host_addresses.internal.address }}:8302"{{ "," if not loop.last else "" }}
+{% for host in groups['consul'] | difference(region_nodes) %}
+        "{{ hostvars[host].ansible_host }}:8302"{{ "," if not loop.last else "" }}
 {% endfor %}
     ]
 }

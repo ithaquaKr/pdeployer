@@ -1,0 +1,6 @@
+---
+# Region 1 configurations
+region_nodes:
+  - region1node1
+  - region1node2
+  - region1node3
