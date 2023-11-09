@@ -26,7 +26,7 @@
 
 - name: Copying docker-compose file
   template:
-    src: consul/docker-compose.yml.j2
+    src: docker-compose.yml.j2
     dest: "{{ consul_workdir }}/docker-compose.yml"
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
