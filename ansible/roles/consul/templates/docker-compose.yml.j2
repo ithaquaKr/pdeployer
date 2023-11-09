@@ -6,7 +6,7 @@ volumes:
 
 services:
   consul-server:
-    image: {{ docker_repository }}/{{ consul_image }}
+    image: {{ consul_image }}
     container_name: consul-server
     restart: always
     volumes:
