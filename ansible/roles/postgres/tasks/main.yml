@@ -1,0 +1,5 @@
+---
+- name: Setup Postgres
+  import_tasks: postgres.yml
+  tags:
+    - postgres

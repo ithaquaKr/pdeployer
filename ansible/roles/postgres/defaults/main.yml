@@ -1,0 +1,21 @@
+---
+# Postgres-patroni configs
+postgres_workdir: "{{ app_base_dir }}/postgres"
+postgres_datadir: "{{ postgres_workdir }}/postgres-data"
+postgres_datadir_container: "{{ postgres_workdir }}/postgres-data/"
+postgres_image: patroni-v2.1.4-postgres-consul:13.6
+postgres_port: 8432
+postgres_dbname: "postgres"
+postgres_users:
+  superuser:
+    username: "postgres"
+    password: "xxxxxx"
+  replication:
+    username: "replicator"
+    password: "xxxxxx"
+  rewind:
+    username: "rewind_user"
+    password: "xxxxxx"
+postgres_network: 10.60.31.0/24
+postgres_scope: pgdb_s2-postgres
+postgres_patroni_restapi_port: 8000
