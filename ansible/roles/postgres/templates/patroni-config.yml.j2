@@ -1,0 +1,69 @@
+scope: {{ postgres_scope }}
+name: patroni-{{ host_addresses.internal.address }}
+restapi:
+    listen: {{ host_addresses.internal.address }}:{{ postgres_patroni_restapi_port }}
+    connect_address: {{ host_addresses.internal.address }}:{{ postgres_patroni_restapi_port }}
+
+consul:
+    host: {{ host_addresses.internal.address }}:8500
+    register_service: true
+
+bootstrap:
+{% if standby_cluster is defined %}
+    dcs:
+        ttl: 30
+        loop_wait: 10
+        retry_timeout: 10
+        maximum_lag_on_failover: 1048576
+        postgresql:
+            use_pg_rewind: true
+        standby_cluster:
+            host: {{ standby_cluster.primary_host_address }}
+            port: {{ standby_cluster.primary_port }}
+{% else %}
+    dcs:
+        ttl: 30
+        loop_wait: 10
+        retry_timeout: 10
+        maximum_lag_on_failover: 1048576
+        postgresql:
+            use_pg_rewind: true
+{% endif %}
+    initdb:
+    - encoding: UTF8
+    - data-checksums
+
+    pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host replication replicator 0.0.0.0/0 md5
+    - host replication replicator {{ postgres_network }} md5
+    - host all all 0.0.0.0/0 md5
+
+postgresql:
+    listen: {{ host_addresses.internal.address }}:{{ postgres_port }}
+    connect_address: {{ host_addresses.internal.address }}:{{ postgres_port }}
+    data_dir: {{ postgres_datadir }}/data
+    pgpass: {{ postgres_datadir }}/pass
+    authentication: {{ postgres_users }}
+    create_replica_methods:
+    - basebackup
+    parameters:
+        unix_socket_directories: {{ postgres_datadir }}/unix
+        archive_mode: on
+        logging_collector: true
+        log_directory: {{ postgres_datadir }}/logs
+        log_filename: postgres.log
+        log_rotation_size: 50000
+        log_truncate_on_rotation: true
+        max_connections: 400
+        shared_buffers: 4GB
+log:
+    level: INFO
+    dir: {{ postgres_datadir }}/logs
+    file_num: 1
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false
