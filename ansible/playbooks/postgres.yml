@@ -1,0 +1,6 @@
+---
+- name: Deploy Postgres on region 1
+  hosts: postgres
+  become: true
+  roles:
+    - roles/postgres

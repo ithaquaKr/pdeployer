@@ -14,3 +14,6 @@ region1
 
 [consul:children]
 region1
+
+[postgres:children]
+region1
