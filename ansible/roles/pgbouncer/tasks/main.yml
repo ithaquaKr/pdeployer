@@ -1,0 +1,5 @@
+---
+- name: Setup PGBouncer for connection pool
+  import_tasks: pgbouncer.yml
+  tags:
+    - pgbouncer
