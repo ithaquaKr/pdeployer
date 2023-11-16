@@ -48,7 +48,7 @@
     recreate: always
 
 - name: Ensuring postgreSQL is started and accepting connection
-  command: docker exec -it postgres pg_isready -h {{ host_addresses.internal.address }} -p {{ postgres_port }}
+  command: docker exec -it postgres pg_isready -h {{ ansible_host }} -p {{ postgres_port }}
   register: pg_isready_result
   until: pg_isready_result.rc == 0
   retries: 5
