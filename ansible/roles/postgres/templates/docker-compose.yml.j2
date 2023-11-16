@@ -9,9 +9,10 @@ services:
     volumes:
       - {{ postgres_datadir }}:{{ postgres_datadir_container }}
       - ./patroni-config.yml:/var/lib/postgresql/patroni-config.yml
-    ports:
-      - "{{ postgres_port }}:{{ postgres_port }}"
-      - "{{ postgres_patroni_port }}:{{ postgres_patroni_port }}"
+    network_mode: host
+#    ports:
+#      - "{{ postgres_port }}:{{ postgres_port }}"
+#      - "{{ postgres_patroni_port }}:{{ postgres_patroni_port }}"
     environment:
       - TZ=Asia/Ho_Chi_Minh
       - PG_UNIX_DIR={{ postgres_datadir }}
