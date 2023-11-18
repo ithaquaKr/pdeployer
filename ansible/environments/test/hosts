@@ -8,9 +8,14 @@ region1node1    ansible_host=10.0.0.40
 region1node2    ansible_host=10.0.0.7
 region1node3    ansible_host=10.0.0.38
 
+# Application Groups
+[app-region1]
+app1 ansible_host=10.0.0.48
+
 # Role Groups
 [common:children]
 region1
+app-region1
 
 [consul:children]
 region1
