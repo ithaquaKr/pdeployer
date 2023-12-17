@@ -1,0 +1,36 @@
+# Test Environment
+[all:children]
+region1
+region1
+
+# Region Groups
+[region1]
+region1node1    ansible_host=10.0.0.40
+region1node2    ansible_host=10.0.0.7
+region1node3    ansible_host=10.0.0.38
+
+[region2]
+region2node1    ansible_host=34.125.120.84
+region2node2    ansible_host=34.125.208.139
+region2node3    ansible_host=34.16.176.250
+
+# Application Groups
+[app-region1]
+app1 ansible_host=10.0.0.48
+
+[app-region2]
+app2 ansible_host=34.125.145.82
+
+# Role Groups
+[common:children]
+region1
+app-region1
+app-region2
+
+[consul:children]
+region1
+region2
+
+[postgres:children]
+region1
+region2
