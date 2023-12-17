@@ -1,0 +1,7 @@
+---
+# Region 1 configurations
+region_nodes:
+  - region2node1
+  - region2node2
+  - region2node3
+consul_datacenter: dc2
