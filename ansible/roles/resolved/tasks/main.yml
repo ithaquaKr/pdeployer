@@ -1,0 +1,5 @@
+---
+- name: Setup DNS via resolv.conf
+  import_tasks: resolved.yml
+  tags:
+    - resolved
