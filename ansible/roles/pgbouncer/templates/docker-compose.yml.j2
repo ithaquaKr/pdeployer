@@ -1,0 +1,33 @@
+version: "3.3"
+
+volumes:
+  app_config:
+    driver: local
+
+services:
+{% if scale_multi_read == True %}
+  pgbouncer-ro:
+    image: {{ pgbouncer_image }}
+    container_name: pgbouncer_ro
+    restart: always
+    volumes:
+      - ./users.txt:{{ pgbouncer_auth_file }}
+      - ./ro-config/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - app_config:/etc/pgbouncer/
+    ports:
+      - {{ pgbouncer_ro_port }}:{{ pgbouncer_port }}
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+{% endif %}
+  pgbouncer-rw:
+    image: {{ pgbouncer_image }}
+    container_name: pgbouncer_rw
+    restart: always
+    volumes:
+      - ./users.txt:{{ pgbouncer_auth_file }}
+      - ./rw-config/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - app_config:/etc/pgbouncer/
+    ports:
+      - {{ pgbouncer_rw_port }}:{{ pgbouncer_port }}
+    environment:
+      - TZ=Asia/Ho_Chi_Minh

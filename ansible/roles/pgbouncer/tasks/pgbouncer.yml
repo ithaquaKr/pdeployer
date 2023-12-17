@@ -1,0 +1,79 @@
+---
+- name: Ensuring directory {{ pgbouncer_workdir }} exists
+  file:
+    path: "{{ pgbouncer_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring read-write pool config directory exists
+  file:
+    path: "{{ pgbouncer_workdir }}/rw-config"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring read-write pool config directory exists
+  file:
+    path: "{{ pgbouncer_workdir }}/rw-config"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+  when: scale_multi_read == True
+
+- name: Copying pgbouncer config files to {{ pgbouncer_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgbouncer_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'pgbouncer.ini.j2', dest: 'rw-config/pgbouncer.ini'}
+
+- name: Copying pgbouncer config files to {{ pgbouncer_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgbouncer_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'pgbouncer.ini.j2', dest: 'ro-config/pgbouncer.ini'}
+  when: scale_multi_read == True
+
+- name: Copying pgbouncer users config files to {{ pgbouncer_workdir }} directory
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ pgbouncer_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'users.txt.j2', dest: 'users.txt'}
+
+- name: Copying docker-compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ pgbouncer_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running pgbouncer services
+  community.docker.docker_compose:
+    project_src: "{{ pgbouncer_workdir }}"
+    state: present
+
+- name: Ensuring pgbouncer read/write pool is started and accepting connections
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: "{{ pgbouncer_rw_port }}"
+    state: started
+    timeout: 60
+    delay: 5
+
+- name: Ensuring pgbouncer read/only pool is started and accepting connections
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: "{{ pgbouncer_ro_port }}"
+    state: started
+    timeout: 60
+    delay: 5
+  when: scale_multi_read == True
