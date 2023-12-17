@@ -3,4 +3,4 @@
   hosts: postgres
   become: true
   roles:
-    - roles/postgres
+    - postgres

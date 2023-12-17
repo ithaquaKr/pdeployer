@@ -1,7 +1,9 @@
 # Test Environment
 [all:children]
 region1
-region1
+region2
+appregion1
+appregion2
 
 # Region Groups
 [region1]
@@ -15,17 +17,18 @@ region2node2    ansible_host=34.125.208.139
 region2node3    ansible_host=34.16.176.250
 
 # Application Groups
-[app-region1]
+[appregion1]
 app1 ansible_host=10.0.0.48
 
-[app-region2]
+[appregion2]
 app2 ansible_host=34.125.145.82
 
 # Role Groups
 [common:children]
 region1
-app-region1
-app-region2
+region2
+appregion1
+appregion2
 
 [consul:children]
 region1
