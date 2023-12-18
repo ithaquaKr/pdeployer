@@ -15,7 +15,7 @@ services:
     volumes:
       - ./users.txt:{{ pgbouncer_auth_file }}
       - ./ro-config/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-      - app_config:/etc/pgbouncer/
+      - ro_app_config:/etc/pgbouncer/
     ports:
       - {{ pgbouncer_ro_port }}:{{ pgbouncer_port }}
     environment:
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./users.txt:{{ pgbouncer_auth_file }}
       - ./rw-config/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-      - app_config:/etc/pgbouncer/
+      - rw_app_config:/etc/pgbouncer/
     ports:
       - {{ pgbouncer_rw_port }}:{{ pgbouncer_port }}
     environment:
