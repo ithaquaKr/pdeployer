@@ -1,5 +1,5 @@
 ---
-- name: Deploy Consul on region 1
+- name: Deploy Consul
   hosts: consul
   become: true
   roles:

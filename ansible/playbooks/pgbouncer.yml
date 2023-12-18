@@ -1,0 +1,6 @@
+---
+- name: Deploy PGBouncer
+  hosts: pgbouncer
+  become: true
+  roles:
+    - pgbouncer

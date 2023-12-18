@@ -1,0 +1,6 @@
+---
+- name: Setup resolved for DNS Consul
+  hosts: all
+  become: true
+  roles:
+    - resolved
