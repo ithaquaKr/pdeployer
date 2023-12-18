@@ -5,6 +5,7 @@ pgbouncer_image: brainsam/pgbouncer:latest
 pgbouncer_pool_mode: "transaction"
 pgbouncer_max_client_conn: 1000
 pgbouncer_port: 6432
+pgbouncer_postgres_port: 8432
 pgbouncer_rw_port: 5432
 pgbouncer_ro_port: 5433
 pgbouncer_listen_addr: "0.0.0.0"
@@ -12,7 +13,3 @@ pgbouncer_auth_type: "md5"
 pgbouncer_auth_file: "/pgbouncer/users.txt"
 pgbouncer_admin_users: "postgres"
 pgbouncer_default_pool_size: 30
-pgbouncer_pools:
-  - name: "postgres"
-    dbname: "postgres"
-    password_md5: ""

@@ -1,7 +1,9 @@
 version: "3.3"
 
 volumes:
-  app_config:
+  rw_app_config:
+    driver: local
+  ro_app_config:
     driver: local
 
 services:

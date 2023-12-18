@@ -27,3 +27,16 @@ app_user_password: !vault |
     3264346438313266370a653463366231373661376363366531383765313830313466613632646230
     3935
 app_base_dir: /home/itha_app
+
+# Domain configurations
+primary_domain: master.postgres.service.dc1.consul
+replica_domain: replica.postgres.service.consul
+
+# System multi-read scale
+scale_multi_read: true
+
+# PGBouncer configurations
+pgbouncer_pools:
+  - name: "backend"
+    dbname: "backend"
+    password_md5: "md5cda413b60e9f657ab5ed68f46b293c14"

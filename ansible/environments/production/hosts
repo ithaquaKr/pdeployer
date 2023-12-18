@@ -37,3 +37,7 @@ region2
 [postgres:children]
 region1
 region2
+
+[pgbouncer:children]
+region1
+region2

@@ -1,6 +1,6 @@
 [databases]
 {% for pool in pgbouncer_pools %}
-{{ pool.name }}=host={{ postgres_enpoint }} port={{ postgres_port }} dbname={{ pool.dbname }}
+{{ pool.name }}=host={{ replica_domain }} port={{ pgbouncer_postgres_port }} dbname={{ pool.dbname }}
 {% endfor %}
 
 [pgbouncer]

@@ -28,7 +28,7 @@
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
   loop:
-    - { src: 'pgbouncer.ini.j2', dest: 'rw-config/pgbouncer.ini'}
+    - { src: 'pgbouncer-rw.ini.j2', dest: 'rw-config/pgbouncer.ini'}
 
 - name: Copying pgbouncer config files to {{ pgbouncer_workdir }} directory
   template:
@@ -37,7 +37,7 @@
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
   loop:
-    - { src: 'pgbouncer.ini.j2', dest: 'ro-config/pgbouncer.ini'}
+    - { src: 'pgbouncer-ro.ini.j2', dest: 'ro-config/pgbouncer.ini'}
   when: scale_multi_read == True
 
 - name: Copying pgbouncer users config files to {{ pgbouncer_workdir }} directory
