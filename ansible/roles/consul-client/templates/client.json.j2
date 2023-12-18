@@ -1,6 +1,6 @@
 {
     "bind_addr": "{{ ansible_host }}",
-    "client_addr": "{{ ansible_host }}",
+    "client_addr": "{{ ansible_host }} 127.0.0.1",
     "datacenter": "{{ consul_client_datacenter }}",
     "domain": "{{ consul_client_domain }}",
     "data_dir": "{{ consul_client_data_dir }}",
@@ -13,25 +13,28 @@
     "server": {{ consul_client_server|lower }},
     "recursors": {{ consul_client_recursors }},
     "services": [
+{% for host in groups['consul'] %}
         {
-            "id": "postgres-master",
-            "name": "postgres",
-            "tags": ["master", "primary"],
+            "id": "postgres-master-{{ hostvars[host].ansible_host}}",
+            "name": "postgres-rw",
             "address": "{{ ansible_host }}",
-            "port": 5433
+            "port": 5432
         },
         {
-            "id": "postgres-replica",
-            "name": "postgres",
-            "tags": ["replica"],
-            "address": "{{ ansible_host }}",
+            "id": "postgres-replica-{{ hostvars[host].ansible_host}}",
+            "name": "postgres-ro",
+            "address": "{{ hostvars[host].ansible_host }}",
             "port": 5433
-        }
+        }{{ "," if not loop.last else ""}}
+{% endfor %}
     ],
+    "ports": {
+        "dns": {{ consul_ports.dns }}
+    },
     "rejoin_after_leave": {{ consul_client_rejoin_after_leave|lower }},
     "disable_update_check": {{ consul_client_disable_update_check|lower}},
     "retry_join": [
-{% for host in consul_client_region_nodes %}
+{% for host in region_nodes %}
         "{{ hostvars[host].ansible_host }}:8301"{{ "," if not loop.last else "" }}
 {% endfor %}
     ]

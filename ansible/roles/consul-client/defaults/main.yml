@@ -1,0 +1,40 @@
+---
+# Consul client configs
+
+### Consul container image
+consul_client_image: consul:1.15
+
+### Consul working directory
+consul_client_workdir: "{{ app_base_dir }}/consul-client"
+
+### Consul domain name config
+consul_client_domain: "consul"
+
+###
+consul_client_data_dir: "/consul/data"
+
+###
+consul_client_ui_config:
+  enabled: true
+
+###
+consul_client_log_level: "INFO"
+
+###
+consul_client_enable_debug: true
+
+###
+consul_client_server: false
+
+###
+consul_client_rejoin_after_leave: true
+
+###
+consul_client_disable_update_check: true
+
+###
+consul_client_recursors: []
+
+###
+consul_client_ports:
+  dns: 53
