@@ -1,0 +1,34 @@
+---
+- name: Ensuring directory {{ pgdb_s1_etcd_workdir }} exists
+  file:
+    name: "{{ pgdb_s1_etcd_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Copying docker-compose file
+  template:
+    src: etcd/docker-compose.yml.j2  
+    dest: "{{ pgdb_s1_etcd_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running etcd service
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s1_etcd_workdir }}"
+    state: present
+    recreate: always 
+
+- name: Wait until the etcd cluster is healthy
+  command: >
+    docker exec -it etcd etcdctl endpoint health
+    --endpoints=http://{{ host_addresses.internal.address }}:2379
+  register: etcd_health_result
+  until: "'is healthy' in etcd_health_result.stdout"
+  retries: 5
+  delay: 3
+  changed_when: false
+
+- name: Cluster health
+  debug:
+    msg: "{{ etcd_health_result.stdout }}"

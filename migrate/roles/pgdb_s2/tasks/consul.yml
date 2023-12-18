@@ -1,0 +1,38 @@
+---
+- name: Ensuring directory {{ pgdb_s2_consul_workdir }} exists
+  file:
+    name: "{{ pgdb_s2_consul_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring directory {{ pgdb_s2_consul_workdir }} exists
+  file:
+    name: "{{ pgdb_s2_consul_workdir }}/{{ item }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+  loop:
+    - configs
+
+- name: Copying consul config files to {{ pgdb_s2_consul_workdir }} directory
+  template:
+    src: "{{ item.src }}"  
+    dest: "{{ pgdb_s2_consul_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'consul/server.json.j2', dest: 'configs/server.json'}
+
+- name: Copying docker-compose file
+  template:
+    src: consul/docker-compose.yml.j2  
+    dest: "{{ pgdb_s2_consul_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running consul service
+  community.docker.docker_compose:
+    project_src: "{{ pgdb_s2_consul_workdir }}"
+    state: present
+    recreate: always

@@ -1,0 +1,7 @@
+[template]
+src="haproxy.cfg.tmpl"
+dest="/confd/app_config/haproxy.cfg"
+keys=[
+    "/service/pgdb_s1-postgres/leader",
+]
+reload_cmd="docker restart haproxy"

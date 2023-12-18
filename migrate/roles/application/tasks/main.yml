@@ -1,0 +1,12 @@
+---
+- name: Setup backend
+  import_tasks: backend.yml
+  tags:
+    - application
+    - application_backend
+
+- name: Setup consul-client
+  import_tasks: consul-client.yml
+  tags:
+    - application
+    - application_consul-client

@@ -1,0 +1,30 @@
+version: "3.3"
+
+volumes:
+  app_config:
+    driver: local
+
+services:
+  confd:
+    image: {{ docker_repository }}/{{ pgdb_s1_confd_image }}
+    container_name: confd
+    restart: always
+    volumes:
+      - ./confd/:/etc/confd/
+      - /var/run/docker.sock:/var/run/docker.sock
+      - app_config:/confd/app_config/
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    depends_on:
+      - haproxy
+
+  haproxy:
+    image: {{ docker_repository }}/{{ pgdb_s1_haproxy_image }}
+    container_name: haproxy
+    restart: always
+    volumes:
+      - app_config:/usr/local/etc/haproxy:ro
+    ports:
+      - {{ pgdb_s1_haproxy_listen_port.stats }}:{{ pgdb_s1_haproxy_listen_port.stats }}
+      - {{ pgdb_s1_haproxy_listen_port.postgres }}:{{ pgdb_s1_haproxy_listen_port.postgres }}
+      - {{ pgdb_s1_haproxy_listen_port.pgbouncer }}:{{ pgdb_s1_haproxy_listen_port.pgbouncer }}

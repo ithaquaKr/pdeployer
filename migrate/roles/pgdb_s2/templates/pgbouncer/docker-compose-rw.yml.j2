@@ -1,0 +1,21 @@
+version: "3.3"
+
+volumes:
+  app_config:
+    driver: local
+
+services:
+  pgbouncer-rw:
+    image: {{ docker_repository }}/{{ pgdb_s2_pgbouncer_image }}
+    container_name: pgbouncer-rw
+    restart: always
+    volumes:
+      - ./users.txt:{{ pgdb_s2_pgbouncer_auth_file }}
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - app_config:/etc/pgbouncer/
+# TODO: Fix this
+#    ports:
+#      - {{ pgdb_s2_pgbouncer_rw_port }}:{{ pgdb_s2_pgbouncer_port }}
+    network_mode: host
+    environment:
+      - TZ=Asia/Ho_Chi_Minh

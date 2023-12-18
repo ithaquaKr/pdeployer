@@ -1,0 +1,40 @@
+---
+- name: Setup consul
+  import_tasks: consul.yml
+  any_errors_fatal: True
+  tags:
+    - pgdb_s2
+    - pgdb_s2_consul
+
+- name: Setup postgres-patroni
+  import_tasks: postgres.yml
+  tags:
+    - pgdb_s2
+    - pgdb_s2_postgres
+
+- name: Setup dns resolved
+  import_tasks: resolved.yml
+  tags:
+    - pgdb_s2
+    - pgdb_s2_resolved
+
+# - name: Bootstrap database
+#   import_tasks: bootstrap.yml
+#   tags:
+#     - pgdb_s2
+#     - pgdb_s2_bootstrap
+#   when: pgdb_s2_bootstrap == True
+#   run_once: True
+# TODO: add bootstrap task
+
+- name: Setup pgbouncer read/write
+  import_tasks: pgbouncer-rw.yml
+  tags:
+    - pgdb_s2
+    - pgdb_s2_pgbouncer_rw
+
+- name: Setup pgbouncer read/only
+  import_tasks: pgbouncer-ro.yml
+  tags:
+    - pgdb_s2
+    - pgdb_s2_pgbouncer_ro

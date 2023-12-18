@@ -1,0 +1,96 @@
+pgdb_s1_workdir: "{{ app_base_dir }}/pgdb_s1"
+ansible_python_interpreter: "/usr/bin/python3"
+
+# Etcd config
+pgdb_s1_etcd_image: etcd:v3.5.2 
+pgdb_s1_etcd_workdir: "{{ pgdb_s1_workdir }}/etcd"
+pgdb_s1_etcd_allow_none_authentication: yes
+pgdb_s1_etcd_listen_peer_port: 2380
+pgdb_s1_etcd_listen_peer_urls: http://0.0.0.0:{{ pgdb_s1_etcd_listen_peer_port }}
+pgdb_s1_etcd_listen_client_port: 2379
+pgdb_s1_etcd_listen_client_urls: http://0.0.0.0:{{ pgdb_s1_etcd_listen_client_port }}
+pgdb_s1_etcd_initial_cluster_token: staging-postgres-etcd
+pgdb_s1_etcd_initial_cluster_state: new
+pgdb_s1_etcd_initial_advertise_peer_urls: http://{{ host_addresses.internal.address }}:{{ pgdb_s1_etcd_listen_peer_port }}
+pgdb_s1_etcd_advertise_client_urls: http://{{ host_addresses.internal.address }}:{{ pgdb_s1_etcd_listen_client_port }}
+pgdb_s1_etcd_enable_v2: true
+pgdb_s1_etcd_data_dir: /etcd-data
+
+# Confd configs
+pgdb_s1_confd_image: dcim-confd:1.0
+
+# HAproxy configs
+pgdb_s1_haproxy_image: haproxy:2.0.7
+pgdb_s1_haproxy_workdir: "{{ pgdb_s1_workdir }}/haproxy"
+pgdb_s1_haproxy_listen_port: 
+  stats: 9000
+  postgres: 5432
+  pgbouncer: 5433
+
+# Keepalived configs
+pgdb_s1_keepalived_image: osixia/keepalived:2.0.20
+pgdb_s1_keepalived_vip_address: 10.60.31.200
+pgdb_s1_keepalived_workdir: "{{ pgdb_s1_workdir }}/keepalived"
+
+# Postgres-patroni configs
+pgdb_s1_postgres_workdir: "{{ pgdb_s1_workdir }}/postgres"
+pgdb_s1_postgres_datadir: "{{ pgdb_s1_postgres_workdir }}/postgres-data"
+pgdb_s1_postgres_datadir_container: "{{ pgdb_s1_postgres_workdir }}/postgres-data/"
+pgdb_s1_postgres_image: patroni-v2.1.4-postgres:13.6
+pgdb_s1_postgres_port: 8432 
+pgdb_s1_postgres_dbname: "postgres"
+pgdb_s1_postgres_users: 
+  superuser:
+    username: "postgres"
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      63646137366330303765343133643230616137376136626364616263623935636537373363333730
+      3534383731313366613734313966303730656333303033340a333862343539303333363038643861
+      31383634313762373365653134346137653232646333333732313531356231356362303739643237
+      3066373163386339650a303539353837636266663532326132333164643162323636613534373337
+      63303261643466316237613862383464313930303230613833323263646265646365
+  replication:
+    username: "replicator"
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      30313632616464333963633236323538326662396231373761383131616433353063383734366137
+      3361303132363934356233363230306137663339326235660a666564386438636666393763343533
+      38393461306266626336653464336438663836363265393732663238326336663930373938343935
+      3830343732313661650a336237396266653232336432393037613339376635393339653334313163
+      36336434656631616530376561303231623139386266373539393961616235343063
+  rewind:
+    username: "rewind_user"
+    password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      62396133356635623332346238623137383639356433636261323261383932643031643632303666
+      3334313633386265313266366433636264323866363034650a623037396663373331383565336262
+      32373163633837393932363231346539386532306561633234613430356264303766336530656434
+      6436666330663739340a303238656562313264623464363430366264303438326533656365396539
+      66653366663231313031363837316665386135316563616130633766353338653563
+pgdb_s1_postgres_network: 10.9.9.0/24
+pgdb_s1_postgres_scope: pgdb_s1-postgres
+pgdb_s1_postgres_patroni_restapi_port: 8000
+
+# PGBouncer configs
+pgdb_s1_pgbouncer_workdir: "{{ pgdb_s1_workdir }}/pgbouncer"
+pgdb_s1_pgbouncer_image: brainsam/pgbouncer:latest
+pgdb_s1_pgbouncer_pool_mode: "transaction"
+pgdb_s1_pgbouncer_max_client_conn: 1000
+pgdb_s1_pgbouncer_port: 6432
+pgdb_s1_pgbouncer_listen_addr: "0.0.0.0"
+pgdb_s1_pgbouncer_auth_type: "md5"
+pgdb_s1_pgbouncer_auth_file: "/pgbouncer/users.txt"
+pgdb_s1_pgbouncer_admin_users: "postgres"
+pgdb_s1_pgbouncer_default_pool_size: 30
+pgdb_s1_pgbouncer_pools:
+  - name: "postgres"
+    dbname: "postgres"
+    password_md5: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      36353166646432653335613732656361323932363032636364636535313739623365666434356539
+      6566636538653763373638316237633136613062633562360a303363316261353738343930376131
+      61616333366136346262366232613064656662653030333033646534363661643066313338623364
+      3630313037373137660a323437613938643732303466323964373865363034666635623364343930
+      32646236633334396439393639663066643731663134316466316234346363643864656638633761
+      3238636238663135313833343534663333663839323665356637
+

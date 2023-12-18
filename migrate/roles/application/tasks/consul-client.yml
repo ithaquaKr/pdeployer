@@ -1,0 +1,38 @@
+---
+- name: Ensuring directory {{ application_consul_client_workdir }} exists
+  file:
+    name: "{{ application_consul_client_workdir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+
+- name: Ensuring directory {{ application_consul_client_workdir }} exists
+  file:
+    name: "{{ application_consul_client_workdir }}/{{ item }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    state: directory
+  loop:
+    - configs
+
+- name: Copying consul_client config files to {{ application_consul_client_workdir }} directory
+  template:
+    src: "{{ item.src }}"  
+    dest: "{{ application_consul_client_workdir }}/{{ item.dest }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  loop:
+    - { src: 'consul-client/client.json.j2', dest: 'configs/client.json'}
+
+- name: Copying docker-compose file
+  template:
+    src: consul-client/docker-compose.yml.j2
+    dest: "{{ application_consul_client_workdir }}/docker-compose.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Running consul_client service
+  community.docker.docker_compose:
+    project_src: "{{ application_consul_client_workdir }}"
+    state: present
+    recreate: always

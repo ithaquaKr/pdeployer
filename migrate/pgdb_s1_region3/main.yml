@@ -1,0 +1,12 @@
+# Pgdb configs
+pgdb_s1_region_nodes:
+  - rg3node1
+  - rg3node2
+  - rg3node3
+
+# Keepalived configs
+pgdb_s1_keepalived_vip_address: 10.60.31.225
+
+pgdb_s1_standby_cluster:
+  primary_host_address: 10.60.31.205
+  primary_port: 5432
