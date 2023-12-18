@@ -1,0 +1,6 @@
+---
+- name: Deploy Consul Client
+  hosts: consulclient
+  become: true
+  roles:
+    - consul-client

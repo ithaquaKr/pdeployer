@@ -41,3 +41,7 @@ region2
 [pgbouncer:children]
 region1
 region2
+
+[consulclient:children]
+appregion1
+appregion2
