@@ -15,7 +15,7 @@
 
 - name: Ensuring read-write pool config directory exists
   file:
-    path: "{{ pgbouncer_workdir }}/rw-config"
+    path: "{{ pgbouncer_workdir }}/ro-config"
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
     state: directory

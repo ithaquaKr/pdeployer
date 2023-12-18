@@ -1,6 +1,6 @@
 ---
 # PGBouncer configs
-pgbouncer_workdir: "{{ workdir }}/pgbouncer-ro"
+pgbouncer_workdir: "{{ app_base_dir }}/pgbouncer"
 pgbouncer_image: brainsam/pgbouncer:latest
 pgbouncer_pool_mode: "transaction"
 pgbouncer_max_client_conn: 1000
