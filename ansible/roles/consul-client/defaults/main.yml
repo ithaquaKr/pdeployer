@@ -34,7 +34,3 @@ consul_client_disable_update_check: true
 
 ###
 consul_client_recursors: []
-
-###
-consul_client_ports:
-  dns: 53

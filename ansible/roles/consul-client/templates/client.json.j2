@@ -28,9 +28,6 @@
         }{{ "," if not loop.last else ""}}
 {% endfor %}
     ],
-    "ports": {
-        "dns": {{ consul_ports.dns }}
-    },
     "rejoin_after_leave": {{ consul_client_rejoin_after_leave|lower }},
     "disable_update_check": {{ consul_client_disable_update_check|lower}},
     "retry_join": [
